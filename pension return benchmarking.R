@@ -13,11 +13,12 @@ library(ggbeeswarm)
 library(echarts4r)
 library(packcircles)
 library(ggrepel)
+library(dplyr)
 
 #########Data prep
 
 # Read pension data & index returns data
-ppd_full <- read.csv("ppd-data-latest-12.csv")
+ppd_full <- read.csv("ppd-data-latest-dec22.csv")
 index_returns <- read.csv("index_returns.csv")
 
 #Function to find mode
@@ -138,7 +139,9 @@ ppd_avg_returns_final <- ppd_select %>%
 target_plan <- "Arizona SRS"
 benchmark_type <- "Empirical Benchmark"
 
-
+write.csv(ppd_cum_returns[, !names(ppd_cum_returns) %in% c("opt_benchmark")]
+          , "ppd_cum_returns.csv", row.names = F)
+write.csv(ppd_avg_returns_final, "ppd_avg_returns_final.csv")
 #########Visualization
 
 #Visualize cumulative returns of the target plan
@@ -175,7 +178,7 @@ ggplot(ppd_cum_returns_plan, aes(x = fy, y = value, col = cum_return_type)) +
         panel.grid.major.y = element_line(size = 0.3),
         legend.position = "none")
 
-  
+
 #Visualize average returns of the target plan
 ppd_avg_returns_final_plan <- ppd_avg_returns_final %>% 
   filter(plan_name == target_plan) %>% 

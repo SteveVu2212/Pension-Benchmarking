@@ -1,0 +1,40 @@
+body { 
+    font: 12px Arial;
+    text-align: center;
+}
+/* 
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+} */
+
+#userSelection {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#container1 {
+    display: flex;
+    width: 100%;
+    height: 300px;
+    justify-content: space-evenly;
+  }
+
+/* #container2{
+    text-align: center;
+} */
+  
+#wrapper-cummulativeReturn,
+#wrapper-excessReturn {
+    width: 50%;
+    height: 300px;
+  }
