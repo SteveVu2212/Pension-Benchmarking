@@ -1,3 +1,7 @@
+
+import {drawCumReturns_} from './modules/cumReturn.js'
+import {drawAvgReturn_} from './modules/avgReturn.js'
+
 async function draw(){
 
     // 1. Access data
@@ -11,18 +15,6 @@ async function draw(){
 
     let allPlanNames = new Array()
     df_avg_returns.forEach(d => allPlanNames.push(d.plan_name))
-    // console.log(allPlanNames)
-
-    //format the year 
-    // const parseTime = d3.timeParse("%Y");
-
-    // df_avg_returns.forEach(function (d) {
-    //     d.fy = parseTime(d.fy);});
-
-    //     df_cum_returns.forEach(function (d) {
-    //     d.fy = parseTime(d.fy);});
-
-    // console.log(df_cum_returns)
 
     const periodSelection = ['10 years', '15 years', '20 years']
     const benchmarkTypeSelection = ['Optimal benchmark',
@@ -101,8 +93,9 @@ async function draw(){
 
     labelDots.selectAll("circle")
         .data(labels)
-        .enter()
-        .append("circle")
+        // .enter()
+        // .append("circle")
+        .join('circle')
         .attr("cx", dimensions.boundedWidth * 0.1)
         .attr("cy", (d,i) => dimensions.boundedHeight * (i+1)/10)
         .attr("r", 4)
@@ -113,126 +106,88 @@ async function draw(){
 
     labelText.selectAll("circle")
         .data(labels)
-        .enter()
-        .append("text")
+        // .enter()
+        // .append("text")
+        .join('text')
         .attr("x", dimensions.boundedWidth * 0.15)
         .attr("y", (d,i) => dimensions.boundedHeight * (i+1)/9)
         .style("fill", "black")
         .text(d => d)
 
-    const drawCumReturns = () => {
-        const subDataset = df_cum_returns.filter(d => d.plan_name === planSelected)
 
-        const actualReturnAccessor = d => parseFloat(d.cum_return)
-        const yearAccessor = d => parseInt(d.fy)
+    // const drawCumReturns = (plan, benchmark) => {
+    //     const subDataset = df_cum_returns.filter(d => d.plan_name === plan)
 
-        let benchmarkReturnAccessor
-        if(benchmarkSelected === 'Optimal benchmark'){
-            benchmarkReturnAccessor =  d => parseFloat(d.cum_opt_benchmark_return)
-        } else {
-            benchmarkReturnAccessor = d => parseFloat(d.cum_custom_benchmark_return)
-        }
+    //     const actualReturnAccessor = d => parseFloat(d.cum_return)
+    //     const yearAccessor = d => parseInt(d.fy)
 
-        const highestReturn = d3.max([d3.max(subDataset, benchmarkReturnAccessor),
-                                    d3.max(subDataset, actualReturnAccessor)])
+    //     let benchmarkReturnAccessor
+    //     if(benchmark === 'Optimal benchmark'){
+    //         benchmarkReturnAccessor =  d => parseFloat(d.cum_opt_benchmark_return)
+    //     } else {
+    //         benchmarkReturnAccessor = d => parseFloat(d.cum_custom_benchmark_return)
+    //     }
 
-        // Create scales
-        const xScale = d3.scaleLinear()
-            .domain(d3.extent(subDataset, yearAccessor))
-            .range([0, dimensions.boundedWidth])
-            .nice()
+    //     const highestReturn = d3.max([d3.max(subDataset, benchmarkReturnAccessor),
+    //                                 d3.max(subDataset, actualReturnAccessor)])
+
+    //     // Create scales
+    //     const xScale = d3.scaleLinear()
+    //         .domain(d3.extent(subDataset, yearAccessor))
+    //         .range([0, dimensions.boundedWidth])
+    //         .nice()
         
-        const yScale = d3.scaleLinear()
-            .domain([1,highestReturn])
-            .range([dimensions.boundedHeight, 0])
-            .nice()
+    //     const yScale = d3.scaleLinear()
+    //         .domain([1,highestReturn])
+    //         .range([dimensions.boundedHeight, 0])
+    //         .nice()
 
-        // Draw data
-        const lineGenerator_actualReturn = d3.line()
-            .x(d => xScale(yearAccessor(d)))
-            .y(d => yScale(actualReturnAccessor(d)))
+    //     // Draw data
+    //     const lineGenerator_actualReturn = d3.line()
+    //         .x(d => xScale(yearAccessor(d)))
+    //         .y(d => yScale(actualReturnAccessor(d)))
 
-        const lineGenerator_optimalReturn = d3.line()
-            .x(d => xScale(yearAccessor(d)))
-            .y(d => yScale(benchmarkReturnAccessor(d)))
+    //     const lineGenerator_optimalReturn = d3.line()
+    //         .x(d => xScale(yearAccessor(d)))
+    //         .y(d => yScale(benchmarkReturnAccessor(d)))
 
-        const transition = d3.transition()
-                            .duration(500)
-                            // .ease(d3.easeSin)
+    //     const transition = d3.transition()
+    //                         .duration(500)
 
-        // const line_ActualReturn = bounds_cummulativeReturn.selectAll(".lineActualReturn").data([subDataset])
-        // const newLine_ActualReturn = line_ActualReturn.enter()
-        //                             .append("path")
-        //                             .attr("d", lineGenerator_actualReturn)
-        //                             .attr("class", "lineActualReturn")
-        //                             .attr("fill", "none")
-        //                             .attr("stroke", "blue")
-        //                             .attr("stroke-width", 2)
-        
-        // const allLine_ActualReturn = newLine_ActualReturn.merge(line_ActualReturn)
-        // allLine_ActualReturn
-        //     .transition(transition)
-        //     .attr("d", lineGenerator_actualReturn)
-
-        // const oldLine_ActualReturn = line_ActualReturn
-        //                             .exit()
-        //                             .transition(transition)
-        //                             .remove()
-
-        const line_ActualReturn = bounds_cummulativeReturn.selectAll(".lineActualReturn")
-                                        .data([subDataset])
-                                        .join("path")
-                                        .transition().duration(500)
-                                        .attr("d", lineGenerator_actualReturn)
-                                        .attr("class", "lineActualReturn")
-                                        .attr("fill", "none")
-                                        .attr("stroke", "blue")
-                                        .attr("stroke-width", 2)
+    //     const line_ActualReturn = bounds_cummulativeReturn.selectAll(".lineActualReturn")
+    //                                     .data([subDataset])
+    //                                     .join("path")
+    //                                     .transition().duration(500)
+    //                                     .attr("d", lineGenerator_actualReturn)
+    //                                     .attr("class", "lineActualReturn")
+    //                                     .attr("fill", "none")
+    //                                     .attr("stroke", "blue")
+    //                                     .attr("stroke-width", 2)
                                         
 
-        const line_optimalReturn = bounds_cummulativeReturn.selectAll(".lineOptimalReturn")
-                                        .data([subDataset])
-                                        .join("path")
-                                        .transition().duration(500)
-                                        .attr("d", lineGenerator_optimalReturn)
-                                        .attr("class", "lineOptimalReturn")
-                                        .attr("fill", "none")
-                                        .attr("stroke", "red")
-                                        .attr("stroke-width", 2)
+    //     const line_optimalReturn = bounds_cummulativeReturn.selectAll(".lineOptimalReturn")
+    //                                     .data([subDataset])
+    //                                     .join("path")
+    //                                     .transition().duration(500)
+    //                                     .attr("d", lineGenerator_optimalReturn)
+    //                                     .attr("class", "lineOptimalReturn")
+    //                                     .attr("fill", "none")
+    //                                     .attr("stroke", "red")
+    //                                     .attr("stroke-width", 2)
 
-        // const line_optimalReturn = bounds_cummulativeReturn.selectAll(".lineOptimalReturn").data([subDataset])
-        // const newLine_OptimalReturn = line_ActualReturn.enter()
-        //                             .append("path")
-        //                             .attr("d", lineGenerator_optimalReturn)
-        //                             .attr("class", "lineOptimalReturn")
-        //                             .attr("fill", "none")
-        //                             .attr("stroke", "red")
-        //                             .attr("stroke-width", 2)
+    //     // Draw peripherals
+    //     const yAxisGenerator = d3.axisLeft().scale(yScale).ticks(5)
+    //     const yAxis = bounds_cummulativeReturn.select(".y-axis").call(yAxisGenerator)
 
-        // const allLine_OptimalReturn = newLine_OptimalReturn.merge(line_optimalReturn)
-        // allLine_OptimalReturn
-        //     .transition(transition)
-        //     .attr("d", lineGenerator_optimalReturn)
+    //     const xAxisGenerator = d3.axisBottom()
+    //                     .scale(xScale)
+    //                     .tickFormat(d3.format(".0f"))
+    //     const xAxis = bounds_cummulativeReturn.select(".x-axis")
+    //                     .call(xAxisGenerator)
+    //                     .style("transform", `translateY(${dimensions.boundedHeight}px)`)
 
-        // const oldLine_OptimalReturn = line_optimalReturn
-        //                             .exit()
-        //                             .transition(transition)
-        //                             .remove()
-
-
-        // Draw peripherals
-        const yAxisGenerator = d3.axisLeft().scale(yScale).ticks(5)
-        const yAxis = bounds_cummulativeReturn.select(".y-axis").call(yAxisGenerator)
-
-        const xAxisGenerator = d3.axisBottom()
-                        .scale(xScale)
-                        .tickFormat(d3.format(".0f"))
-        const xAxis = bounds_cummulativeReturn.select(".x-axis")
-                        .call(xAxisGenerator)
-                        .style("transform", `translateY(${dimensions.boundedHeight}px)`)
-
-        // Set up interactions
-    }
+    //     // Set up interactions
+    // }
 
     // Draw canvas - Average returns
 
@@ -251,56 +206,55 @@ async function draw(){
         .attr("class", "y-axis")
         .style("transform", `translateX(${dimensions.width/4}px)`)
 
-    const drawAvgReturn = () => {
 
-        const minValue = d3.min([
-            d3.min(df_avg_returns, d => parseFloat(d.avg_opt_benchmark_return)),
-            d3.min(df_avg_returns, d => parseFloat(d.avg_custom_benchmark_return))
-        ])
+    // const drawAvgReturn = () => {
 
-        const maxValue = d3.max([
-            d3.max(df_avg_returns, d => parseFloat(d.avg_opt_benchmark_return)),
-            d3.max(df_avg_returns, d => parseFloat(d.avg_custom_benchmark_return))
-        ])
+    //     const minValue = d3.min([
+    //         d3.min(df_avg_returns, d => parseFloat(d.avg_opt_benchmark_return)),
+    //         d3.min(df_avg_returns, d => parseFloat(d.avg_custom_benchmark_return))
+    //     ])
 
-        const subDataset = df_avg_returns.filter(d => d.plan_name === planSelected)
+    //     const maxValue = d3.max([
+    //         d3.max(df_avg_returns, d => parseFloat(d.avg_opt_benchmark_return)),
+    //         d3.max(df_avg_returns, d => parseFloat(d.avg_custom_benchmark_return))
+    //     ])
 
-        const avgOptBenchmarkReturn = subDataset[0].avg_opt_benchmark_return
-        const avgCustomBenchmarkReturn = subDataset[0].avg_custom_benchmark_return
-        const actualAvgReturn = subDataset[0].avg_return
+    //     const subDataset = df_avg_returns.filter(d => d.plan_name === planSelected)
 
-        // Create nodes for each data points
-        let nodes = [
-            benchmarkSelected === 'Optimal benchmark' ? avgOptBenchmarkReturn : avgCustomBenchmarkReturn,
-            actualAvgReturn
-        ]
+    //     const avgOptBenchmarkReturn = subDataset[0].avg_opt_benchmark_return
+    //     const avgCustomBenchmarkReturn = subDataset[0].avg_custom_benchmark_return
+    //     const actualAvgReturn = subDataset[0].avg_return
+
+    //     // Create nodes for each data points
+    //     let nodes = [
+    //         benchmarkSelected === 'Optimal benchmark' ? avgOptBenchmarkReturn : avgCustomBenchmarkReturn,
+    //         actualAvgReturn
+    //     ]
 
         
-        const yScale = d3.scaleLinear()
-            .domain([minValue, maxValue])
-            .range([dimensions.boundedHeight, 0])
-            .nice()
+    //     const yScale = d3.scaleLinear()
+    //         .domain([minValue, maxValue])
+    //         .range([dimensions.boundedHeight, 0])
+    //         .nice()
 
 
-        const circle_avgReturn = d3.select(".circleAvgReturn")
-                .selectAll("circle")
-                .data(nodes)
-                .join("circle")
-                .transition().duration(500)
-                .attr("cx", dimensions.width / 4 )
-                .attr("cy", d => yScale(d))
-                .attr("r", 8)
-                .attr('fill', (d, i) => i === 0 ? "blue" : "red")
-                .attr("fill-opacity", 0.5)
+    //     const circle_avgReturn = d3.select(".circleAvgReturn")
+    //             .selectAll("circle")
+    //             .data(nodes)
+    //             .join("circle")
+    //             .transition().duration(500)
+    //             .attr("cx", dimensions.width / 4 )
+    //             .attr("cy", d => yScale(d))
+    //             .attr("r", 8)
+    //             .attr('fill', (d, i) => i === 0 ? "blue" : "red")
+    //             .attr("fill-opacity", 0.5)
 
 
-        const yAxisGenerator = d3.axisLeft(yScale).ticks(7).tickSize(5)
-        const yAxis = bounds_avgReturn.select(".y-axis")
-                            .call(yAxisGenerator)
+    //     const yAxisGenerator = d3.axisLeft(yScale).ticks(7).tickSize(5)
+    //     const yAxis = bounds_avgReturn.select(".y-axis")
+    //                         .call(yAxisGenerator)
 
-    }
-
-    // console.log(df_avg_returns)
+    // }
 
     // Draw canvas - Excess returns
 
@@ -334,7 +288,6 @@ async function draw(){
         } else {
             benchmarkReturnAccessor = d => parseFloat(d.cum_custom_benchmark_excess)
         }
-        // console.log(benchmarkSelected)
         // Create scales
         const xScale = d3.scaleLinear()
             .domain(d3.extent(df_cum_returns, yearAccessor))
@@ -346,9 +299,8 @@ async function draw(){
             .range([dimensions.boundedHeight, 0])
             .nice()
 
-        // console.log(yScale.domain(), yScale.range())
 
-        dataNest = Array.from(
+        const dataNest = Array.from(
             d3.group(df_cum_returns, d => d.plan_name), ([key, value]) => ({key, value})
         );
 
@@ -389,7 +341,6 @@ async function draw(){
                 .attr("y2", yScale(0))
                 .style("stroke", "blue")
                 .style("stroke-opacity", 0.5)
-                // .style("stroke-width", 2 + 'px')
 
     }
 
@@ -476,7 +427,6 @@ async function draw(){
             .range([0, 0.9 * avgReturn_dimensions.boundedWidth])
             .nice()
 
-        // console.log(rScale.domain())
 
         // Create nodes for each data points
         let nodes = df_avg_returns.map(function(d, i){
@@ -588,8 +538,10 @@ async function draw(){
     d3.select("select.benchmarkSelection")
         .on("change", function(e){
             benchmarkSelected = this.value
-            drawCumReturns()
-            drawAvgReturn()
+            // drawCumReturns(planSelected, benchmarkSelected)
+            drawCumReturns_(df_cum_returns, dimensions, planSelected, benchmarkSelected, bounds_cummulativeReturn)
+            // drawAvgReturn()
+            drawAvgReturn_(df_avg_returns, dimensions, planSelected, benchmarkSelected, bounds_avgReturn)
             drawExcessReturns()
             drawAvgExcessReturns()
         })
@@ -598,16 +550,22 @@ async function draw(){
         .on("change", function(e){
             e.preventDefault()
             planSelected = this.value
-            drawCumReturns()
-            drawAvgReturn()
+            // drawCumReturns(planSelected, benchmarkSelected),
+            drawCumReturns_(df_cum_returns, dimensions, planSelected, benchmarkSelected, bounds_cummulativeReturn)
+            // drawAvgReturn()
+            drawAvgReturn_(df_avg_returns, dimensions, planSelected, benchmarkSelected, bounds_avgReturn)
             drawExcessReturns()
             drawAvgExcessReturns()
         })
 
-    drawCumReturns()
-    drawAvgReturn()
+    // drawCumReturns(planSelected, benchmarkSelected)
+    drawCumReturns_(df_cum_returns, dimensions, planSelected, benchmarkSelected, bounds_cummulativeReturn)
+    // drawAvgReturn()
+    drawAvgReturn_(df_avg_returns, dimensions, planSelected, benchmarkSelected, bounds_avgReturn)
     drawExcessReturns()
     drawAvgExcessReturns()
+
+    
 
 }
 

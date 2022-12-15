@@ -6,60 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="app.js"></script>
+    <script type="module" src="main.js"></script>
     <link rel="stylesheet" href="style.css" />
     <title>Pension benchmarking</title>
   </head>
   <body>
-    <!-- <h2>Users' Selection</h2> -->
     <div id="userSelection">
       <div id="planDropdown">
-        <!-- <label for="selectPlan">Select a plan</label> <br><br/> -->
         <h2>Select a plan</h2>
-        <select class="planSelection" name="planSelection"></select>
+        <select id="planSelection" class="selection plan" name="planSelection"></select>
       </div>
       <div id="benchmarkDropdown">
-        <!-- <label for="selectBenchmark">Select a benchmark</label> <br><br/> -->
         <h2>Select a benchmark</h2>
-        <select class="benchmarkSelection" name="benchmarkSelection"></select>
+        <select id="benchmarkSelection" class="selection benchmark" name="benchmarkSelection"></select>
       </div>
       <div id="periodDropdown">
-        <!-- <label for="selectPeriod">Select a period</label> <br><br/> -->
         <h2>Select a period</h2>
-        <select class="periodSelection" name="periodSelection"></select>
+        <select id="periodSelection" class="selection period" name="periodSelection"></select>
       </div>
     </div>
 
     <br /><br />
-    <!-- <br><br/> -->
 
     <div id="container1">
       <div id="cummulativeReturn">
         <h2>Cummulative Return</h2>
-        <div id="wrapper-cummulativeReturn"></div>
+        <div id="wrapper-cummulativeReturn" class="wrapper cummulativeReturn"></div>
       </div>
       <div id="avgReturn">
         <h2>Average Return</h2>
-        <div id="wrapper-avgReturn"></div>
+        <div id="wrapper-avgReturn" class="wrapper averageReturn"></div>
       </div>
       <div id="excessReturn">
         <h2>Excess Return</h2>
-        <div id="wrapper-excessReturn"></div>
+        <div id="wrapper-excessReturn" class="wrapper excessReturn"></div>
       </div>
     </div>
 
     <br /><br />
     <br /><br />
-    <!-- <br /><br /> -->
-    <!-- <h2>Cummulative returns</h2>
-    <div id="wrapper-cummulativeReturn"></div>
-
-    <h2>Excess returns</h2>
-    <div id="wrapper-excessReturn"></div> -->
 
     <div id="container2">
       <h2>Average excess returns</h2>
-      <div id="wrapper-avgExcessReturn"></div>
+      <div id="wrapper-avgExcessReturn" class="wrapper averageExcessReturn"></div>
     </div>
+
   </body>
 </html>
